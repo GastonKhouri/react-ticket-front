@@ -1,19 +1,24 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Navigate, useNavigate } from 'react-router';
 import { CloseCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Col, Row, Typography, Button, Divider } from 'antd';
 
 import useHideMenu from '../hooks/useHideMenu';
 import { getUserStorage } from '../helpers/getUserStorage';
+import { SocketContext } from '../context/socketContext';
+import { Ticket } from '../interfaces/ticketInterface';
 
 const { Title, Text } = Typography;
 
 const DesktopPage = () => {
 
-    const navigate = useNavigate();
     useHideMenu( false );
+    const navigate = useNavigate();
+    const { socket } = useContext( SocketContext );
 
     const [ user ] = useState( getUserStorage() );
+    const [ ticket, setTicket ] = useState<Ticket>();
+
 
     const exit = () => {
 
@@ -24,7 +29,11 @@ const DesktopPage = () => {
 
     const nextTicket = () => {
 
-        console.log( 'siguiente' );
+        socket.emit( 'next-ticket-work', user, ( ticket: Ticket ) => {
+
+            setTicket( ticket );
+
+        } );
 
     };
 
@@ -58,18 +67,23 @@ const DesktopPage = () => {
 
             <Divider />
 
-            <Row>
-                <Col>
-                    <Text> Esta atendiendo al cliente numero: </Text>
+            {
+                ticket &&
+                <Row>
+                    <Col>
+                        <Text> Esta atendiendo al cliente numero: </Text>
 
-                    <Text
-                        style={ { fontSize: 30 } }
-                        type='danger'
-                    >
-                        55
-                    </Text>
-                </Col>
-            </Row>
+                        <Text
+                            style={ { fontSize: 30 } }
+                            type='danger'
+                        >
+                            { ticket?.number }
+                        </Text>
+                    </Col>
+                </Row>
+
+            }
+
 
             <Row>
 

@@ -10,14 +10,14 @@ export const UIContext = createContext( {} as ContextProps );
 
 export const UIProvider = ( { children }: any ) => {
 
-    const [ hidden, sethidden ] = useState( false );
+    const [ hidden, setHidden ] = useState( false );
 
     const showMenu = () => {
-        sethidden( false );
+        setHidden( false );
     };
 
     const hideMenu = () => {
-        sethidden( true );
+        setHidden( true );
     };
 
     return (
